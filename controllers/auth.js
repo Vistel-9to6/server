@@ -12,15 +12,22 @@ exports.logout = (req, res, next) => {
   });
 };
 
-exports.loginCallback = (req, res, next) =>
-  passport.authenticate("google", (err, user) => {
-    if (err) {
-      return res.status(500).json({ result: "ng", message: "Internal Error" });
-    }
+exports.loginCallback = passport.authenticate("google", {
+  successRedirect: "/api/auth/success",
+  failureRedirect: "/api/auth/fail",
+});
 
-    if (!user) {
-      return res.status(401).json({ result: "ng", message: "Unauthorized" });
-    }
+exports.loginFailure = (req, res, next) => {
+  return res.ststua(401).json({
+    result: "ng",
+    message: "Unauthorized",
+  });
+};
 
-    return res.status(200).json({ result: "ok", message: "login success" });
-  })(req, res, next);
+exports.loginSuccess = (req, res, next) => {
+  return res.ststua(200).json({
+    result: "ok",
+    message: "login success",
+    user: req.user,
+  });
+};
