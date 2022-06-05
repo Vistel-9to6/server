@@ -9,5 +9,5 @@ exports.findUserBygoogleId = async (query) => {
 };
 
 exports.creatNewUser = async (data) => {
-  return await User.create(data).lean();
+  return await User.create(data);
 };

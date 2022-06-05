@@ -6,8 +6,15 @@ exports.login = passport.authenticate("google", {
 
 exports.logout = (req, res, next) => {
   req.logout();
+  req.session.destroy((err) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ result: "ng", errorMessage: "logout failure" });
+    }
 
-  return res.status(200).json({ result: "ok" });
+    return res.status(200).json({ result: "ok" });
+  });
 };
 
 exports.loginCallback = passport.authenticate("google", {
