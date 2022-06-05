@@ -9,9 +9,6 @@ const UserSchema = new mongoose.Schema(
     profilePhoto: {
       type: String,
     },
-    lastVisited: {
-      type: Date,
-    },
   },
   { timestamps: true },
 );

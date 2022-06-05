@@ -7,7 +7,7 @@ exports.login = passport.authenticate("google", {
 exports.logout = (req, res, next) => {
   req.logout();
 
-  return res.status(200).json({ result: "ok", message: "logout success" });
+  return res.status(200).json({ result: "ok" });
 };
 
 exports.loginCallback = passport.authenticate("google", {
@@ -16,16 +16,15 @@ exports.loginCallback = passport.authenticate("google", {
 });
 
 exports.loginFailure = (req, res, next) => {
-  return res.ststua(401).json({
+  return res.status(401).json({
     result: "ng",
-    message: "Unauthorized",
+    errorMessage: "Unauthorized",
   });
 };
 
 exports.loginSuccess = (req, res, next) => {
-  return res.ststua(200).json({
+  return res.status(200).json({
     result: "ok",
-    message: "login success",
     user: req.user,
   });
 };

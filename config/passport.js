@@ -1,14 +1,15 @@
 const passport = require("passport");
-const UserService = require("../services/UserService");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
+const UserService = require("../services/UserService");
+
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user._id);
 });
 
-passport.deserializeUser(async (user, done) => {
+passport.deserializeUser(async (id, done) => {
   try {
-    const user = await UserService.findUserById(user._id);
+    const user = await UserService.findUserById(id);
 
     done(null, user);
   } catch (err) {
@@ -29,13 +30,12 @@ passport.use(
       const profilePhoto = profile.photos[0].value;
 
       try {
-        const user = await UserService.getUserByEmail({ userId });
+        const user = await UserService.findUserBygoogleId({ userId });
 
         if (!user) {
           const newUser = await UserService.creatNewUser({
             userId,
             profilePhoto,
-            lastVisited: new Date(),
           });
 
           req.user = newUser;
@@ -45,7 +45,7 @@ passport.use(
         req.user = user;
         return done(null, user);
       } catch (error) {
-        done(error, false);
+        done(error);
       }
     },
   ),

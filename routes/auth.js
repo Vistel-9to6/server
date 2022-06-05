@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const authRouter = express.Router();
 const {
   login,
   logout,
@@ -8,10 +8,11 @@ const {
   loginFailure,
 } = require("../controllers/auth");
 
-router.route("/").get(login);
-router.route("/callback").get(loginCallback);
-router.route("/logout").get(logout);
-router.route("/success").get(loginSuccess);
-router.route("/fail").get(loginFailure);
+authRouter
+  .get("/", login)
+  .get("/callback", loginCallback)
+  .get("/logout", logout)
+  .get("/success", loginSuccess)
+  .get("/fail", loginFailure);
 
-module.exports = router;
+module.exports = authRouter;
