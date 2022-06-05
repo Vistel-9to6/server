@@ -3,12 +3,12 @@ const UserService = require("../services/UserService");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 passport.serializeUser((user, done) => {
-  done(null, user._id);
+  done(null, user);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (user, done) => {
   try {
-    const user = await UserService.findUserById(id);
+    const user = await UserService.findUserById(user._id);
 
     done(null, user);
   } catch (err) {
@@ -21,19 +21,19 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: '/auth/callback',
+      callbackURL: "/auth/callback",
       passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
-      const email = profile.emails[0].value;
+      const userId = profile.id;
       const profilePhoto = profile.photos[0].value;
 
       try {
-        const user = await UserService.getUserByEmail({ email });
+        const user = await UserService.getUserByEmail({ userId });
 
         if (!user) {
           const newUser = await UserService.creatNewUser({
-            email,
+            userId,
             profilePhoto,
             lastVisited: new Date(),
           });
@@ -48,7 +48,7 @@ passport.use(
         done(error, false);
       }
     },
-  )
+  ),
 );
 
 module.exports = passport;
