@@ -15,7 +15,6 @@
     "dotenv": "^16.0.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
     "mongoose": "^6.3.5",
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
