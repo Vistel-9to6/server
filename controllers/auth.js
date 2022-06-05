@@ -5,11 +5,9 @@ exports.login = passport.authenticate("google", {
 });
 
 exports.logout = (req, res, next) => {
-  req.session.destroy((err) => {
-    req.logout();
+  req.logout();
 
-    return res.status(200).json({ result: "ok", message: "Internal Error" });
-  });
+  return res.status(200).json({ result: "ok", message: "logout success" });
 };
 
 exports.loginCallback = passport.authenticate("google", {

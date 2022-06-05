@@ -8,9 +8,9 @@ const {
   loginFailure,
 } = require("../controllers/auth");
 
-router.route("/").post(login);
+router.route("/").get(login);
 router.route("/callback").get(loginCallback);
-router.route("/logout").post(logout);
+router.route("/logout").get(logout);
 router.route("/success").get(loginSuccess);
 router.route("/fail").get(loginFailure);
 
