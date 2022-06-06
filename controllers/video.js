@@ -2,11 +2,11 @@ const VideoService = require("../services/VideoService");
 
 exports.getVideoList = async (req, res, next) => {
   try {
-    const videoLists = await VideoService.findVideoList();
+    const videoList = await VideoService.findVideoList();
 
     return res.status(201).json({
       result: "ok",
-      videos: videoLists,
+      videos: videoList,
     });
   } catch (err) {
     return res.status(500).json({
