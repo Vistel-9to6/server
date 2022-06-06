@@ -1,5 +1,5 @@
 const Video = require("../models/Video");
 
-exports.findVideoLists = async () => {
+exports.findVideoList = async () => {
   return await Video.find().lean();
 };
