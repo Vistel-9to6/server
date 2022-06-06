@@ -10,6 +10,7 @@ const cors = require("cors");
 
 const passport = require("./config/passport");
 const authRouter = require("./routes/auth");
+const videoRouter = require("./routes/video");
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRouter);
+app.use("/api/videos", videoRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
