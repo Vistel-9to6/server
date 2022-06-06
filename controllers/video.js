@@ -2,7 +2,7 @@ const VideoService = require("../services/VideoService");
 
 exports.getVideoList = async (req, res, next) => {
   try {
-    const videoLists = await VideoService.findVideoLists();
+    const videoLists = await VideoService.findVideoList();
 
     return res.status(201).json({
       result: "ok",
