@@ -22,7 +22,7 @@ const VideoSchema = new mongoose.Schema(
     ],
     dueDate: {
       type: Date,
-      required: true,
+      required: [true, "dueDate not specified"],
     },
   },
   { timestamps: true },
