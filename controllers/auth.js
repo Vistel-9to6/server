@@ -1,37 +1,25 @@
-const passport = require("passport");
+const UserService = require("../services/UserService");
 
-exports.login = passport.authenticate("google", {
-  scope: ["profile"],
-});
+exports.login = async (req, res, next) => {
+  const { user } = req.body;
 
-exports.logout = (req, res, next) => {
-  req.logout();
-  req.session.destroy((err) => {
-    if (err) {
-      return res
-        .status(400)
-        .json({ result: "ng", errorMessage: "logout failure" });
+  try {
+    const existUser = await UserService.findUserQuery(user.uid);
+
+    if (!existUser) {
+      await UserService.creatNewUser({
+        userId: user.uid,
+        profilePhoto: user.photoURL,
+      });
     }
 
-    return res.status(200).json({ result: "ok" });
-  });
-};
-
-exports.loginCallback = passport.authenticate("google", {
-  successRedirect: "/api/auth/success",
-  failureRedirect: "/api/auth/fail",
-});
-
-exports.loginFailure = (req, res, next) => {
-  return res.status(401).json({
-    result: "ng",
-    errorMessage: "Unauthorized",
-  });
-};
-
-exports.loginSuccess = (req, res, next) => {
-  return res.status(200).json({
-    result: "ok",
-    user: req.user,
-  });
+    return res.status(200).json({
+      result: "ok",
+    });
+  } catch (err) {
+    return res.status(401).json({
+      result: "ng",
+      errorMessage: "Unauthorized",
+    });
+  }
 };

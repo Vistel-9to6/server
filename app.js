@@ -6,13 +6,26 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
+const connectDB = require("./models/index");
 const cors = require("cors");
 
-const passport = require("./config/passport");
 const authRouter = require("./routes/auth");
 const videoRouter = require("./routes/video");
 
 const app = express();
+
+connectDB();
+const corsOptions = {
+  origin: ["http://localhost:3000", "https://keen-paletas-3d2f76.netlify.app"],
+};
+
+app.use(cors(corsOptions));
+
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   session({
@@ -21,22 +34,6 @@ app.use(
     saveUninitialized: false,
   }),
 );
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(
-  cors({
-    origin: "https://keen-paletas-3d2f76.netlify.app",
-    methods: "GET, POST, PUT, DELETE",
-    credentials: true,
-  }),
-);
-
-app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRouter);
 app.use("/api/videos", videoRouter);

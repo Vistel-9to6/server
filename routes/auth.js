@@ -1,18 +1,7 @@
 const express = require("express");
 const authRouter = express.Router();
-const {
-  login,
-  logout,
-  loginCallback,
-  loginSuccess,
-  loginFailure,
-} = require("../controllers/auth");
+const { login } = require("../controllers/auth");
 
-authRouter
-  .get("/login", login)
-  .get("/callback", loginCallback)
-  .get("/logout", logout)
-  .get("/success", loginSuccess)
-  .get("/fail", loginFailure);
+authRouter.post("/login", login);
 
 module.exports = authRouter;
