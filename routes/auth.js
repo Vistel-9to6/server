@@ -9,7 +9,7 @@ const {
 } = require("../controllers/auth");
 
 authRouter
-  .get("/", login)
+  .get("/login", login)
   .get("/callback", loginCallback)
   .get("/logout", logout)
   .get("/success", loginSuccess)
