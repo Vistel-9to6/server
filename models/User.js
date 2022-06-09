@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema(
   {
     userId: {
       type: String,
-      required: [true, "userid is required."],
+      required: [true, "userId is required."],
     },
     profilePhoto: {
       type: String,

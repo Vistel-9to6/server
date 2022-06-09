@@ -1,9 +1,13 @@
 const User = require("../Models/User");
 
-exports.findUserByUserId = async (userId) => {
-  return await User.findOne({ userId }).lean();
+exports.findUserById = async (objectId) => {
+  return await User.findById(objectId).lean();
 };
 
-exports.createNewUser = async (data) => {
+exports.findUserBygoogleId = async (query) => {
+  return await User.findOne(query).lean();
+};
+
+exports.creatNewUser = async (data) => {
   return await User.create(data);
 };
