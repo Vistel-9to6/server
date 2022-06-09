@@ -14,7 +14,7 @@ exports.createUser = async (req, res, next) => {
       audience: process.env.GOOGLE_CLIENT_ID,
     });
   } catch (err) {
-    return res.status(401).json({
+    return res.status(500).json({
       result: "ng",
       errorMessage: "unAuthorized",
     });
