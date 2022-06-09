@@ -1,45 +1,24 @@
 require("dotenv").config();
 
-const createError = require("http-errors");
 const express = require("express");
-const path = require("path");
+const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const session = require("express-session");
-const cors = require("cors");
+const passportLoader = require("./passport");
+const path = require("path");
 
-const passport = require("./config/passport");
-const authRouter = require("./routes/auth");
-const videoRouter = require("./routes/video");
+const apiRouter = require("./routes/auth");
 
 const app = express();
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET_KEY,
-    resave: false,
-    saveUninitialized: false,
-  }),
-);
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(
-  cors({
-    origin: "https://keen-paletas-3d2f76.netlify.app",
-    methods: "GET, POST, PUT, DELETE",
-    credentials: true,
-  }),
-);
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+passportLoader(app);
 
-app.use("/api/auth", authRouter);
-app.use("/api/videos", videoRouter);
+app.use("/api/auth", apiRouter);
 
 app.use((req, res, next) => {
   next(createError(404));

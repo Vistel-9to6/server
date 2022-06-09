@@ -1,37 +1,57 @@
-const passport = require("passport");
+const jwt = require("jsonwebtoken");
+const UserService = require("../services/UserService");
+const { OAuth2Client } = require("google-auth-library");
 
-exports.login = passport.authenticate("google", {
-  scope: ["profile"],
-});
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-exports.logout = (req, res, next) => {
-  req.logout();
-  req.session.destroy((err) => {
-    if (err) {
-      return res
-        .status(400)
-        .json({ result: "ng", errorMessage: "logout failure" });
+exports.createUser = async (req, res, next) => {
+  const { token } = req.body;
+  let decoded;
+
+  try {
+    decoded = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      result: "ng",
+      errorMessage: "internal server error",
+    });
+  }
+
+  if (!decoded) {
+    return res.status(401).json({
+      result: "ng",
+      errorMessage: "unauthorized",
+    });
+  }
+
+  const payload = decoded.getPayload();
+  const user = {
+    userId: payload.sub,
+    profilePhoto: payload.picture,
+  };
+
+  const { userId, profilePhoto } = user;
+
+  try {
+    let user = await UserService.findUserByUserId(userId);
+
+    if (!user) {
+      user = await UserService.createNewUser({ userId, profilePhoto });
     }
 
-    return res.status(200).json({ result: "ok" });
-  });
-};
+    const token = jwt.sign(
+      { id: userId, profilePhoto },
+      process.env.JWT_SECRET,
+    );
 
-exports.loginCallback = passport.authenticate("google", {
-  successRedirect: "/api/auth/success",
-  failureRedirect: "/api/auth/fail",
-});
-
-exports.loginFailure = (req, res, next) => {
-  return res.status(401).json({
-    result: "ng",
-    errorMessage: "Unauthorized",
-  });
-};
-
-exports.loginSuccess = (req, res, next) => {
-  return res.status(200).json({
-    result: "ok",
-    user: req.user,
-  });
+    return res.json({ userId, profilePhoto, token });
+  } catch (err) {
+    return res.json({
+      result: "ng",
+      errorMessage: "cannot create a user. try again.",
+    });
+  }
 };

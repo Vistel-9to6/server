@@ -4,10 +4,11 @@ const UserSchema = new mongoose.Schema(
   {
     userId: {
       type: String,
-      required: [true, "아이디는 필수 입력 사항입니다."],
+      required: [true, "userId is required."],
     },
     profilePhoto: {
       type: String,
+      required: [true, "profilePhoto is required."],
     },
   },
   { timestamps: true },
