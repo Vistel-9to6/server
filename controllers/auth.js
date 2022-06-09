@@ -16,7 +16,7 @@ exports.createUser = async (req, res, next) => {
   } catch (err) {
     return res.status(500).json({
       result: "ng",
-      errorMessage: "unAuthorized",
+      errorMessage: "internal server error",
     });
   }
 
