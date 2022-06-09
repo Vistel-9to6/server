@@ -1,7 +1,10 @@
+require("dotenv").config();
+
 const express = require("express");
 const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const passportLoader = require("./passport");
 const path = require("path");
 
 const apiRouter = require("./routes/auth");
@@ -13,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+passportLoader(app);
 
 app.use("/api/auth", apiRouter);
 
