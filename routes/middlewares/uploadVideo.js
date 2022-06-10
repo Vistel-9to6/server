@@ -26,3 +26,5 @@ exports.uploadVideo = multer({
   },
   storage: s3VideoUploader,
 });
+
+module.exports = { s3 };
