@@ -4,7 +4,6 @@ const mongoDBConnect = require("./models/index");
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
-const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 
@@ -16,16 +15,14 @@ const app = express();
 mongoDBConnect();
 app.use(
   cors({
-    origin: "https://keen-paletas-3d2f76.netlify.app",
+    origin: "*",
     methods: "GET, POST, PUT, DELETE",
     credentials: true,
   }),
 );
-
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRouter);
