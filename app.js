@@ -1,24 +1,35 @@
 require("dotenv").config();
+const mongoDBConnect = require("./models/index");
 
-const express = require("express");
 const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const passportLoader = require("./passport");
-const path = require("path");
+const cors = require("cors");
 
-const apiRouter = require("./routes/auth");
+const authRouter = require("./routes/auth");
+const videoRouter = require("./routes/video");
 
 const app = express();
+
+mongoDBConnect();
+app.use(
+  cors({
+    origin: "https://keen-paletas-3d2f76.netlify.app",
+    methods: "GET, POST, PUT, DELETE",
+    credentials: true,
+  }),
+);
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-passportLoader(app);
 
-app.use("/api/auth", apiRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/videos", videoRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
@@ -28,6 +39,7 @@ app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
+  console.log(err);
   return res.status(err.status || 500).json({
     result: "ng",
     errorMessage: "Internal Error",
