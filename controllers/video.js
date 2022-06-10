@@ -1,4 +1,5 @@
 const VideoService = require("../services/VideoService");
+const UserService = require("../services/UserService");
 
 exports.getVideoList = async (req, res, next) => {
   try {
@@ -16,27 +17,25 @@ exports.getVideoList = async (req, res, next) => {
 };
 
 exports.createVideo = async (req, res, next) => {
+  const { title, maxCreators } = req.body;
   const { file } = req;
-  console.log("back");
-  console.log(req.file); // RN에서 body.append 안에 넣은 이름으로 받아옴
+  const { userId } = req.user;
 
-  const { title, dueDate, userId } = result;
+  const user = await UserService.findUserBygoogleId({ userId });
 
   try {
     await VideoService.createNewVideo({
-      title: title,
-      videoUrl:
-        process.env.NODE_ENV === "development" ? file.path : file.location,
-      creators: ["23dwefwl2efdf"],
-      dueDate: "2022-05-01",
+      title,
+      videoUrl: file.location,
+      creators: [user._id],
+      maxCreators,
     });
 
     return res.status(201).json({
       result: "ok",
     });
   } catch (err) {
-    console.log("에러");
-    return res.status(500).json({
+    return res.json({
       result: "ng",
       errorMessage: "cannot create a video. try again.",
     });
