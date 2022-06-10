@@ -16,9 +16,9 @@ const VideoSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    dueDate: {
-      type: Date,
-      required: [true, "dueDate not specified"],
+    maxCreators: {
+      type: Number,
+      max: [5, "max value is 5"],
     },
   },
   { timestamps: true },

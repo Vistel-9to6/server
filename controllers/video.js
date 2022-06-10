@@ -1,12 +1,12 @@
 const VideoService = require("../services/VideoService");
+const UserService = require("../services/UserService");
 
 exports.getVideoList = async (req, res, next) => {
   try {
     const videoList = await VideoService.findVideoList();
-
     return res.status(200).json({
       result: "ok",
-      videos: videoList,
+      videoList,
     });
   } catch (err) {
     return res.status(500).json({
@@ -16,20 +16,28 @@ exports.getVideoList = async (req, res, next) => {
   }
 };
 
-exports.getVideo = async (req, res, next) => {
-  const { id } = req.params;
+exports.createVideo = async (req, res, next) => {
+  const { title, maxCreators } = req.body;
+  const { file } = req;
+  const { userId } = req.user;
+
+  const user = await UserService.findUserBygoogleId({ userId });
 
   try {
-    const video = await VideoService.findVideoById(id);
+    await VideoService.createNewVideo({
+      title,
+      videoUrl: file.location,
+      creators: [user._id],
+      maxCreators,
+    });
 
-    return res.status(200).json({
+    return res.status(201).json({
       result: "ok",
-      video: video,
     });
   } catch (err) {
-    return res.status(500).json({
+    return res.json({
       result: "ng",
-      errorMessage: "cannot get a video. try again.",
+      errorMessage: "cannot create a video. try again.",
     });
   }
 };
