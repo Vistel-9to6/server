@@ -1,13 +1,19 @@
 const path = require("path");
 const fs = require("fs");
+const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { Upload } = require("@aws-sdk/lib-storage");
-const { s3 } = require("./routes/middlewares/uploadVideo");
-const { concatVideos } = require("./concatVideos");
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+  region: "ap-northeast-2",
+});
 
 const randomStr = Math.random().toString(36).substring(2, 12);
 
 const uploadVideoToAWS = async (stream) => {
-  console.log(stream);
   try {
     const data = fs.readFileSync(path.join(__dirname, stream));
     const parallelUploads3 = new Upload({
@@ -24,16 +30,21 @@ const uploadVideoToAWS = async (stream) => {
     });
 
     return await parallelUploads3.done();
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    return { result: "ng" };
   }
 };
 
-exports.concatAndSaveVideo = async (originVideo, newVideo) => {
-  const result = await concatVideos(originVideo, newVideo);
-  const save = await uploadVideoToAWS(result);
-
-  fs.unlinkSync(path.join(__dirname, result));
-
-  return save;
+exports.deleteFile = async (filename) => {
+  try {
+    await s3.send(
+      new DeleteObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `videos/${filename}`,
+      }),
+    );
+    return { result: "ok" };
+  } catch (error) {
+    return { result: "ng" };
+  }
 };

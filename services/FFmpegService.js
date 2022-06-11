@@ -11,12 +11,12 @@ exports.concatVideos = (originVideo, newVideo) => {
       .setFfmpegPath(ffmpegPath)
       .setFfprobePath(ffprobePath)
       .on("error", (err) => {
-        console.log(err);
-        return;
+        return {
+          result: "ng",
+        };
       })
       .mergeToFile(`${randomStr}.mp4`, "/")
       .on("end", () => {
-        console.log("Merging finished !");
         return resolve(`${randomStr}.mp4`);
       });
   });
