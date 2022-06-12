@@ -9,7 +9,7 @@ const { uploadVideo } = require("../routes/middlewares/uploadVideo");
 const { isLoggedIn } = require("./middlewares/authorization");
 
 videoRouter.get("/", getVideoList);
-videoRouter.post("/", isLoggedIn, uploadVideo.single("video"), createVideo);
-videoRouter.patch("/", isLoggedIn, uploadVideo.single("video"), updateVideo);
+videoRouter.post("/", uploadVideo.single("video"), createVideo);
+videoRouter.patch("/", uploadVideo.single("video"), updateVideo);
 
 module.exports = videoRouter;

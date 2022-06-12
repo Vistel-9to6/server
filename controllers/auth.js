@@ -11,7 +11,7 @@ exports.createUser = async (req, res, next) => {
   try {
     decoded = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: process.env.EXPO_CLIENT_ID,
     });
   } catch (err) {
     return res.status(500).json({
@@ -36,7 +36,7 @@ exports.createUser = async (req, res, next) => {
   const { userId, profilePhoto } = user;
 
   try {
-    let user = await UserService.findUserByUserId(userId);
+    let user = await UserService.findUserBygoogleId({ userId });
 
     if (!user) {
       user = await UserService.createNewUser({ userId, profilePhoto });

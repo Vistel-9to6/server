@@ -25,13 +25,13 @@ exports.createVideo = async (req, res, next) => {
   const { file } = req;
   const { userId } = req.user;
 
-  const user = await UserService.findUserBygoogleId({ userId });
-
   try {
+    const user = await UserService.findUserBygoogleId({ userId });
+
     await VideoService.createNewVideo({
       title,
       videoUrl: file.location,
-      creators: [user._id],
+      creators: [user.id],
       maxCreators,
     });
 
@@ -62,7 +62,7 @@ exports.updateVideo = async (req, res, next) => {
     }
 
     const newVideo = await uploadVideoToAWS(concatedVideo);
-    fs.unlinkSync(path.join(__dirname, newVideo));
+    fs.unlinkSync(path.join(__dirname, `../${concatedVideo}`));
 
     if (newVideo.result === "ng") {
       return res.status(500).json({
@@ -82,12 +82,12 @@ exports.updateVideo = async (req, res, next) => {
       result: "ok",
     });
 
-    deleteFile(originVideoUrl);
-    deleteFile(file.location);
+    await deleteFile(originVideoUrl);
+    await deleteFile(file.location);
     return;
   } catch (err) {
     return res.status(500).json({
-      result: "ng",
+      result: "서버 에러",
       errorMessage: "cannot update a video. try again.",
     });
   }

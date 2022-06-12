@@ -13,9 +13,9 @@ const s3 = new S3Client({
 
 const randomStr = Math.random().toString(36).substring(2, 12);
 
-const uploadVideoToAWS = async (stream) => {
+exports.uploadVideoToAWS = async (stream) => {
   try {
-    const data = fs.readFileSync(path.join(__dirname, stream));
+    const data = fs.readFileSync(path.join(__dirname, `../${stream}`));
     const parallelUploads3 = new Upload({
       client: s3,
       params: {

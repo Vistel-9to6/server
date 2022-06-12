@@ -1,4 +1,4 @@
-const User = require("../Models/User");
+const User = require("../models/User");
 
 exports.findUserById = async (objectId) => {
   return await User.findById(objectId).lean();
