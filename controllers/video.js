@@ -8,6 +8,7 @@ const { uploadVideoToAWS, deleteFile } = require("../services/AWSService");
 exports.getVideoList = async (req, res, next) => {
   try {
     const videoList = await VideoService.findVideoList();
+
     return res.status(200).json({
       result: "ok",
       videoList,
@@ -23,10 +24,11 @@ exports.getVideoList = async (req, res, next) => {
 exports.createVideo = async (req, res, next) => {
   const { title, maxCreators } = req.body;
   const { file } = req;
-  const { userId } = req.user;
+  const { id } = req.decoded;
+  console.log(id);
 
   try {
-    const user = await UserService.findUserBygoogleId({ userId });
+    const user = await UserService.findUserBygoogleId({ userId: id });
 
     await VideoService.createNewVideo({
       title,
@@ -49,7 +51,7 @@ exports.createVideo = async (req, res, next) => {
 exports.updateVideo = async (req, res, next) => {
   const { originVideoUrl } = req.body;
   const { file } = req;
-  const { userId } = req.user;
+  const { id } = req.decoded;
 
   try {
     const concatedVideo = await concatVideos(originVideoUrl, file.location);
@@ -71,7 +73,7 @@ exports.updateVideo = async (req, res, next) => {
       });
     }
 
-    const user = await UserService.findUserBygoogleId({ userId });
+    const user = await UserService.findUserBygoogleId({ userId: id });
     await VideoService.updateVideoDetails(
       originVideoUrl,
       newVideo.Location,
