@@ -87,7 +87,7 @@ exports.updateVideo = async (req, res, next) => {
     return;
   } catch (err) {
     return res.status(500).json({
-      result: "서버 에러",
+      result: "server error",
       errorMessage: "cannot update a video. try again.",
     });
   }

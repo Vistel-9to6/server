@@ -5,11 +5,11 @@ const {
   createVideo,
   updateVideo,
 } = require("../controllers/video");
-const { uploadVideo } = require("../routes/middlewares/uploadVideo");
+const { uploadVideoToAWS } = require("../routes/middlewares/uploadToAWS");
 const { isLoggedIn } = require("./middlewares/authorization");
 
 videoRouter.get("/", getVideoList);
-videoRouter.post("/", uploadVideo.single("video"), createVideo);
-videoRouter.patch("/", uploadVideo.single("video"), updateVideo);
+videoRouter.post("/", uploadVideoToAWS.single("video"), createVideo);
+videoRouter.patch("/", uploadVideoToAWS.single("video"), updateVideo);
 
 module.exports = videoRouter;
