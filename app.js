@@ -1,12 +1,11 @@
 require("dotenv").config();
-const mongoDBConnect = require("./models/index");
-
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const logger = require("morgan");
 const cors = require("cors");
 
+const mongoDBConnect = require("./models/index");
 const authRouter = require("./routes/auth");
 const videoRouter = require("./routes/video");
 
@@ -36,7 +35,6 @@ app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  console.log(err);
   return res.status(err.status || 500).json({
     result: "ng",
     errorMessage: "Internal Error",

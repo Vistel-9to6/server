@@ -1,5 +1,9 @@
+const path = require("path");
+const fs = require("fs");
 const VideoService = require("../services/VideoService");
 const UserService = require("../services/UserService");
+const { concatVideos } = require("../services/FFmpegService");
+const { uploadVideoToAWS, deleteFile } = require("../services/AWSService");
 
 exports.getVideoList = async (req, res, next) => {
   try {
@@ -21,9 +25,9 @@ exports.createVideo = async (req, res, next) => {
   const { file } = req;
   const { userId } = req.user;
 
-  const user = await UserService.findUserBygoogleId({ userId });
-
   try {
+    const user = await UserService.findUserBygoogleId({ userId });
+
     await VideoService.createNewVideo({
       title,
       videoUrl: file.location,
@@ -35,9 +39,56 @@ exports.createVideo = async (req, res, next) => {
       result: "ok",
     });
   } catch (err) {
-    return res.json({
+    return res.status(500).json({
       result: "ng",
       errorMessage: "cannot create a video. try again.",
+    });
+  }
+};
+
+exports.updateVideo = async (req, res, next) => {
+  const { originVideoUrl } = req.body;
+  const { file } = req;
+  const { userId } = req.user;
+
+  try {
+    const concatedVideo = await concatVideos(originVideoUrl, file.location);
+
+    if (concatedVideo.result === "ng") {
+      return res.status(500).json({
+        result: "ng",
+        errorMessage: "cannot update a video. try again.",
+      });
+    }
+
+    const newVideo = await uploadVideoToAWS(concatedVideo);
+    fs.unlinkSync(path.join(__dirname, `../${concatedVideo}`));
+
+    if (newVideo.result === "ng") {
+      return res.status(500).json({
+        result: "ng",
+        errorMessage: "cannot update a video. try again.",
+      });
+    }
+
+    const user = await UserService.findUserBygoogleId({ userId });
+    await VideoService.updateVideoDetails(
+      originVideoUrl,
+      newVideo.Location,
+      user._id,
+    );
+
+    res.status(201).json({
+      result: "ok",
+    });
+
+    await deleteFile(originVideoUrl);
+    await deleteFile(file.location);
+    return;
+  } catch (err) {
+    return res.status(500).json({
+      result: "server error",
+      errorMessage: "cannot update a video. try again.",
     });
   }
 };
