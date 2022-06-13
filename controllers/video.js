@@ -25,7 +25,6 @@ exports.createVideo = async (req, res, next) => {
   const { title, maxCreators } = req.body;
   const { file } = req;
   const { id } = req.decoded;
-  console.log(id);
 
   try {
     const user = await UserService.findUserBygoogleId({ userId: id });
