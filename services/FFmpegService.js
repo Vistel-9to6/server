@@ -13,6 +13,7 @@ exports.concatVideos = (originVideo, newVideo) => {
       .on("error", (err) => {
         return {
           result: "ng",
+          errorMessage: "cannot merge videos",
         };
       })
       .mergeToFile(`${randomStr}.mp4`, "/")

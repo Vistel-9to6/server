@@ -31,7 +31,7 @@ exports.createVideo = async (req, res, next) => {
     await VideoService.createNewVideo({
       title,
       videoUrl: file.location,
-      creators: [user.id],
+      creators: [user._id],
       maxCreators,
     });
 
