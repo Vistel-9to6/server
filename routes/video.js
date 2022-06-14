@@ -4,13 +4,15 @@ const {
   getVideoList,
   createVideo,
   updateVideo,
+  createGif,
 } = require("../controllers/video");
-const { uploadVideoToAWS } = require("../routes/middlewares/uploadToAWS");
+const { uploadVideoWithMulter } = require("../routes/middlewares/uploadToAWS");
 const { isLoggedIn } = require("./middlewares/authorization");
 
 videoRouter
   .get("/", getVideoList)
-  .post("/", isLoggedIn, uploadVideoToAWS.single("video"), createVideo)
-  .patch("/", isLoggedIn, uploadVideoToAWS.single("video"), updateVideo);
+  .post("/gif", isLoggedIn, createGif)
+  .post("/", isLoggedIn, uploadVideoWithMulter.single("video"), createVideo)
+  .patch("/", isLoggedIn, uploadVideoWithMulter.single("video"), updateVideo);
 
 module.exports = videoRouter;
