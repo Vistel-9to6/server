@@ -54,17 +54,14 @@ exports.updateVideo = async (req, res, next) => {
 
   try {
     const concatedVideo = await concatVideos(originVideoUrl, file.location);
-
     if (concatedVideo.result === "ng") {
       return res.status(500).json({
         result: "ng",
         errorMessage: "cannot update a video. try again.",
       });
     }
-
     const newVideo = await uploadVideoToAWS(concatedVideo, "mp4");
     fs.unlinkSync(path.join(__dirname, `../${concatedVideo}`));
-
     if (newVideo.result === "ng") {
       return res.status(500).json({
         result: "ng",
@@ -108,7 +105,7 @@ exports.createGif = async (req, res, next) => {
     });
   } catch (err) {
     return res.status(500).json({
-      result: "CreateGif ng",
+      result: "ng",
       errorMessage: "cannot create a video. try again.",
     });
   }

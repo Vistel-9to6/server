@@ -33,7 +33,7 @@ exports.uploadVideoToAWS = async (stream, ext) => {
     return await parallelUploads3.done();
   } catch (error) {
     return {
-      result: "uploadVideoToAWS ng",
+      result: "ng",
       errorMessage: "cannot upload a video",
     };
   }
@@ -50,6 +50,6 @@ exports.deleteFile = async (filename) => {
 
     return { result: "ok" };
   } catch (error) {
-    return { result: "deleteFile ng", errorMessage: "cannot delete a video" };
+    return { result: "ng", errorMessage: "cannot delete a video" };
   }
 };

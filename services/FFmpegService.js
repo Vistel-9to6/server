@@ -5,6 +5,7 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
 const randomStr = Math.random().toString(36).substring(2, 12);
+const now = Date.now();
 
 exports.concatVideos = (originVideo, newVideo) => {
   return new Promise((resolve, reject) => {
@@ -12,19 +13,19 @@ exports.concatVideos = (originVideo, newVideo) => {
       .input(newVideo)
       .on("error", (err) => {
         return {
-          result: "concatVideos ng",
+          result: "ng",
           errorMessage: "cannot merge videos",
         };
       })
-      .mergeToFile(`${randomStr}.mp4`, "/")
+      .mergeToFile(`${now}_${randomStr}.mp4`, "/")
       .on("end", () => {
-        return resolve(`${randomStr}.mp4`);
+        return resolve(`${now}_${randomStr}.mp4`);
       });
   });
 };
 
 exports.convertGif = (originVideo, fps) => {
-  const filename = `${Date.now() + ".gif"}`;
+  const filename = `${Date.now()}_${randomStr}.gif`;
 
   return new Promise((resolve, reject) => {
     ffmpeg(originVideo)
