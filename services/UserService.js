@@ -4,7 +4,7 @@ exports.findUserById = async (objectId) => {
   return await User.findById(objectId).lean();
 };
 
-exports.findUserBygoogleId = async (query) => {
+exports.findUserByGoogleId = async (query) => {
   return await User.findOne(query).lean();
 };
 

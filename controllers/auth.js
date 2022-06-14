@@ -36,7 +36,7 @@ exports.createUser = async (req, res, next) => {
   const { userId, profilePhoto } = user;
 
   try {
-    let user = await UserService.findUserBygoogleId({ userId });
+    let user = await UserService.findUserByGoogleId({ userId });
 
     if (!user) {
       user = await UserService.createNewUser({ userId, profilePhoto });

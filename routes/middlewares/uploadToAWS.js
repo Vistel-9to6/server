@@ -20,11 +20,11 @@ const s3VideoUploader = multerS3({
   },
 });
 
-const uploadVideoToAWS = multer({
+const uploadVideoWithMulter = multer({
   limits: {
     fileSize: 20 * 1024 * 1024,
   },
   storage: s3VideoUploader,
 });
 
-module.exports = { s3, uploadVideoToAWS };
+module.exports = { s3, uploadVideoWithMulter };

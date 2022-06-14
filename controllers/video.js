@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const VideoService = require("../services/VideoService");
 const UserService = require("../services/UserService");
-const { concatVideos } = require("../services/FFmpegService");
+const { concatVideos, convertGif } = require("../services/FFmpegService");
 const { uploadVideoToAWS, deleteFile } = require("../services/AWSService");
 
 exports.getVideoList = async (req, res, next) => {
@@ -27,7 +27,7 @@ exports.createVideo = async (req, res, next) => {
   const { id } = req.decoded;
 
   try {
-    const user = await UserService.findUserBygoogleId({ userId: id });
+    const user = await UserService.findUserByGoogleId({ userId: id });
 
     await VideoService.createNewVideo({
       title,
@@ -54,17 +54,14 @@ exports.updateVideo = async (req, res, next) => {
 
   try {
     const concatedVideo = await concatVideos(originVideoUrl, file.location);
-
     if (concatedVideo.result === "ng") {
       return res.status(500).json({
         result: "ng",
         errorMessage: "cannot update a video. try again.",
       });
     }
-
-    const newVideo = await uploadVideoToAWS(concatedVideo);
+    const newVideo = await uploadVideoToAWS(concatedVideo, "mp4");
     fs.unlinkSync(path.join(__dirname, `../${concatedVideo}`));
-
     if (newVideo.result === "ng") {
       return res.status(500).json({
         result: "ng",
@@ -72,7 +69,7 @@ exports.updateVideo = async (req, res, next) => {
       });
     }
 
-    const user = await UserService.findUserBygoogleId({ userId: id });
+    const user = await UserService.findUserByGoogleId({ userId: id });
     await VideoService.updateVideoDetails(
       originVideoUrl,
       newVideo.Location,
@@ -90,6 +87,26 @@ exports.updateVideo = async (req, res, next) => {
     return res.status(500).json({
       result: "server error",
       errorMessage: "cannot update a video. try again.",
+    });
+  }
+};
+
+exports.createGif = async (req, res, next) => {
+  const { videoUrl, fps } = req.body;
+
+  try {
+    const convertedGif = await convertGif(videoUrl, fps);
+    const newGif = await uploadVideoToAWS(convertedGif, "gif");
+    fs.unlinkSync(path.join(__dirname, `../${convertedGif}`));
+
+    return res.status(201).json({
+      result: "ok",
+      file: newGif.Location,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      result: "ng",
+      errorMessage: "cannot create a video. try again.",
     });
   }
 };

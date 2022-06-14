@@ -13,14 +13,15 @@ const s3 = new S3Client({
 
 const randomStr = Math.random().toString(36).substring(2, 12);
 
-exports.uploadVideoToAWS = async (stream) => {
+exports.uploadVideoToAWS = async (stream, ext) => {
   try {
     const data = fs.readFileSync(path.join(__dirname, `../${stream}`));
+
     const parallelUploads3 = new Upload({
       client: s3,
       params: {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `videos/${Date.now()}_${randomStr}.mp4`,
+        Key: `videos/${Date.now()}_${randomStr}.${ext}`,
         Body: data,
       },
     });
@@ -31,7 +32,10 @@ exports.uploadVideoToAWS = async (stream) => {
 
     return await parallelUploads3.done();
   } catch (error) {
-    return { result: "ng", errorMessage: "cannot upload a video" };
+    return {
+      result: "ng",
+      errorMessage: "cannot upload a video",
+    };
   }
 };
 
