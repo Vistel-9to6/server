@@ -25,7 +25,7 @@ exports.concatVideos = (originVideo, newVideo) => {
 };
 
 exports.convertGif = (originVideo, fps) => {
-  const filename = `${Date.now()}_${randomStr}.gif`;
+  const filename = `${now}_${randomStr}.gif`;
 
   return new Promise((resolve, reject) => {
     ffmpeg(originVideo)
