@@ -3,6 +3,8 @@ const multer = require("multer");
 const multerS3 = require("multer-s3");
 const path = require("path");
 
+const randomStr = Math.random().toString(36).substring(2, 12);
+
 const s3 = new S3Client({
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_ID,
@@ -16,7 +18,11 @@ const s3VideoUploader = multerS3({
   bucket: process.env.AWS_BUCKET_NAME,
   acl: "public-read",
   key(req, file, cb) {
-    cb(null, `videos/${Date.now()}_${path.basename(file.originalname)}`);
+    if (file.fieldname === "thumbnail") {
+      cb(null, `thumbnails/${Date.now()}_${randomStr}.jpg`);
+    } else {
+      cb(null, `videos/${Date.now()}_${randomStr}.mp4`);
+    }
   },
 });
 

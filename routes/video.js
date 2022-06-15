@@ -12,7 +12,11 @@ const { isLoggedIn } = require("./middlewares/authorization");
 videoRouter
   .get("/", getVideoList)
   .post("/gif", isLoggedIn, createGif)
-  .post("/", isLoggedIn, uploadVideoWithMulter.single("video"), createVideo)
+  .post(
+    "/",
+    isLoggedIn,
+    uploadVideoWithMulter.fields([{ name: "video" }, { name: "thumbnail" }]),
+    createVideo,
+  )
   .patch("/", isLoggedIn, uploadVideoWithMulter.single("video"), updateVideo);
-
 module.exports = videoRouter;

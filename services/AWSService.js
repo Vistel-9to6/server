@@ -21,7 +21,10 @@ exports.uploadVideoToAWS = async (stream, ext) => {
       client: s3,
       params: {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `videos/${Date.now()}_${randomStr}.${ext}`,
+        Key:
+          ext === "mp4"
+            ? `videos/${Date.now()}_${randomStr}.${ext}`
+            : `gif/${Date.now()}_${randomStr}.${ext}`,
         Body: data,
       },
     });

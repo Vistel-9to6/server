@@ -23,7 +23,7 @@ exports.getVideoList = async (req, res, next) => {
 
 exports.createVideo = async (req, res, next) => {
   const { title, maxCreators } = req.body;
-  const { file } = req;
+  const { video, thumbnail } = req.files;
   const { id } = req.decoded;
 
   try {
@@ -31,7 +31,8 @@ exports.createVideo = async (req, res, next) => {
 
     await VideoService.createNewVideo({
       title,
-      videoUrl: file.location,
+      videoUrl: video[0].location,
+      thumbnailUrl: thumbnail[0].location,
       creators: [user._id],
       maxCreators,
     });

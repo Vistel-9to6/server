@@ -10,6 +10,10 @@ const VideoSchema = new mongoose.Schema(
       type: String,
       required: [true, "videoUrl not specified"],
     },
+    thumbnailUrl: {
+      type: String,
+      required: [true, "thumbnailUrl not specified"],
+    },
     creators: [
       {
         type: mongoose.Schema.Types.ObjectId,
