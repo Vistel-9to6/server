@@ -26,7 +26,7 @@ exports.concatVideos = (originVideo, newVideo) => {
 };
 
 exports.convertGif = (originVideo, filter) => {
-  const { color, grid, fps } = filter;
+  const { color, grid, fps = 15 } = filter;
   const filename = `${now}_${randomStr}.gif`;
 
   const getGifOption = (color, grid) => {
