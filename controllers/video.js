@@ -92,10 +92,10 @@ exports.updateVideo = async (req, res, next) => {
 };
 
 exports.createGif = async (req, res, next) => {
-  const { videoUrl, fps } = req.body;
+  const { videoUrl, filter } = req.body;
 
   try {
-    const convertedGif = await convertGif(videoUrl, fps);
+    const convertedGif = await convertGif(videoUrl, filter);
     const newGif = await uploadVideoToAWS(convertedGif, "gif");
     fs.unlinkSync(path.join(__dirname, `../${convertedGif}`));
 
