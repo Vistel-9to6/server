@@ -12,12 +12,14 @@ exports.concatVideos = (originVideo, newVideo) => {
   return new Promise((resolve, reject) => {
     ffmpeg(originVideo)
       .input(newVideo)
+      .fps(24)
       .on("error", (err) => {
         return {
           result: "ng",
           errorMessage: "cannot merge videos",
         };
       })
+      .videoCodec("libx264")
       .mergeToFile(`${now}_${randomStr}.mp4`, "/")
       .on("end", () => {
         return resolve(`${now}_${randomStr}.mp4`);
@@ -26,7 +28,7 @@ exports.concatVideos = (originVideo, newVideo) => {
 };
 
 exports.convertGif = (originVideo, filter) => {
-  const { color, grid, fps = 15 } = filter;
+  const { color, grid, fps } = filter;
   const filename = `${now}_${randomStr}.gif`;
 
   const getGifOption = (color, grid) => {
@@ -103,10 +105,26 @@ exports.convertGif = (originVideo, filter) => {
     }
   };
 
+  if (getGifOption(color, grid)) {
+    return new Promise((resolve, reject) => {
+      ffmpeg(originVideo)
+        .complexFilter(getGifOption(color, grid))
+        .fps(fps ? fps : 15)
+        .output(`./${filename}`)
+        .on("end", (err) => {
+          if (!err) {
+            console.log("conversion Done");
+          }
+
+          return resolve(filename);
+        })
+        .run();
+    });
+  }
+
   return new Promise((resolve, reject) => {
     ffmpeg(originVideo)
-      .complexFilter(getGifOption(color, grid))
-      .fps(fps)
+      .fps(fps ? fps : 15)
       .output(`./${filename}`)
       .on("end", (err) => {
         if (!err) {
