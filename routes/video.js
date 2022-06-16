@@ -2,7 +2,7 @@ const express = require("express");
 const videoRouter = express.Router();
 const {
   getVideoList,
-  getUserVideoList,
+  getMyVideoList,
   createVideo,
   updateVideo,
   createGif,
@@ -12,7 +12,7 @@ const { isLoggedIn } = require("./middlewares/authorization");
 
 videoRouter
   .get("/", getVideoList)
-  .get("/:userId", isLoggedIn, getUserVideoList)
+  .get("/:userId", isLoggedIn, getMyVideoList)
   .post("/gif", isLoggedIn, createGif)
   .post(
     "/",
@@ -21,4 +21,5 @@ videoRouter
     createVideo,
   )
   .patch("/", isLoggedIn, uploadVideoWithMulter.single("video"), updateVideo);
+
 module.exports = videoRouter;

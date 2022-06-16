@@ -21,12 +21,12 @@ exports.getVideoList = async (req, res, next) => {
   }
 };
 
-exports.getUserVideoList = async (req, res, next) => {
+exports.getMyVideoList = async (req, res, next) => {
   const { id } = req.decoded;
 
   try {
     const user = await UserService.findUserByGoogleId({ userId: id });
-    const videoList = await VideoService.findUserVideoList(user._id);
+    const videoList = await VideoService.findMyVideoList(user._id);
 
     return res.status(200).json({
       result: "ok",
