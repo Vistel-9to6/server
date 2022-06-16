@@ -21,6 +21,25 @@ exports.getVideoList = async (req, res, next) => {
   }
 };
 
+exports.getMyVideoList = async (req, res, next) => {
+  const { id } = req.decoded;
+
+  try {
+    const user = await UserService.findUserByGoogleId({ userId: id });
+    const videoList = await VideoService.findMyVideoList(user._id);
+
+    return res.status(200).json({
+      result: "ok",
+      videoList,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      result: "ng",
+      errorMessage: "cannot get all videos. try again.",
+    });
+  }
+};
+
 exports.createVideo = async (req, res, next) => {
   const { title, maxCreators } = req.body;
   const { video, thumbnail } = req.files;

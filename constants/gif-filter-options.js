@@ -54,7 +54,7 @@ exports.GRID_4 = [
   "[e][f][g][h]hstack=inputs=4[second]",
   "[i][j][k][l]hstack=inputs=4[third]",
   "[m][n][o][p]hstack=inputs=4[fourth]",
-  "[first][second][thrid][fourth]vstack=inputs=4",
+  "[first][second][third][fourth]vstack=inputs=4",
 ];
 
 exports.SEPIA = [
