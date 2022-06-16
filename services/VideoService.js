@@ -4,6 +4,10 @@ exports.findVideoList = async () => {
   return await Video.find().lean();
 };
 
+exports.findUserVideoList = async (id) => {
+  return await Video.find({ creators: { $in: id } });
+};
+
 exports.createNewVideo = async (data) => {
   return await Video.create(data);
 };
