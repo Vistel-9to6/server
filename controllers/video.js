@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+
 const VideoService = require("../services/VideoService");
 const UserService = require("../services/UserService");
 const { concatVideos, convertGif } = require("../services/FFmpegService");
@@ -73,15 +74,18 @@ exports.updateVideo = async (req, res, next) => {
   const { id } = req.decoded;
 
   try {
-    const concatedVideo = await concatVideos(originVideoUrl, file.location);
-    if (concatedVideo.result === "ng") {
+    const concatenatedVideo = await concatVideos(originVideoUrl, file.location);
+
+    if (concatenatedVideo.result === "ng") {
       return res.status(500).json({
         result: "ng",
         errorMessage: "cannot update a video. try again.",
       });
     }
-    const newVideo = await uploadVideoToAWS(concatedVideo, "mp4");
-    fs.unlinkSync(path.join(__dirname, `../${concatedVideo}`));
+
+    const newVideo = await uploadVideoToAWS(concatenatedVideo, "mp4");
+    fs.unlinkSync(path.join(__dirname, `../${concatenatedVideo}`));
+
     if (newVideo.result === "ng") {
       return res.status(500).json({
         result: "ng",
@@ -96,13 +100,15 @@ exports.updateVideo = async (req, res, next) => {
       user._id,
     );
 
-    res.status(201).json({
+    const originAddress = originVideoUrl.split("videos/")[1];
+    const newAddress = file.location.split("videos/")[1];
+
+    await deleteFile(originAddress);
+    await deleteFile(newAddress);
+
+    return res.status(201).json({
       result: "ok",
     });
-
-    await deleteFile(originVideoUrl);
-    await deleteFile(file.location);
-    return;
   } catch (err) {
     return res.status(500).json({
       result: "server error",

@@ -31,84 +31,14 @@ exports.convertGif = (originVideo, filter) => {
   const { color, grid, fps } = filter;
   const filename = `${now}_${randomStr}.gif`;
 
-  const getGifOption = (color, grid) => {
-    if (!color && !grid) {
-      return "";
-    }
+  const getOption = (color, grid) =>
+    gifFilterOptions[`OPTION_${grid[0]}_${color}`];
+  const type = getOption(color, grid);
 
-    if (!color) {
-      if (grid === "2x2") {
-        return gifFilterOptions.GRID_2;
-      }
-
-      if (grid === "3x3") {
-        return gifFilterOptions.GRID_3;
-      }
-
-      if (grid === "4x4") {
-        return gifFilterOptions.GRID_4;
-      }
-    }
-
-    if (color === "SEPIA") {
-      if (!grid) {
-        return gifFilterOptions.SEPIA;
-      }
-
-      if (grid === "2x2") {
-        return gifFilterOptions.GRID_2_SEPIA;
-      }
-
-      if (grid === "3x3") {
-        return gifFilterOptions.GRID_3_SEPIA;
-      }
-
-      if (grid === "4x4") {
-        return gifFilterOptions.GRID_4_SEPIA;
-      }
-    }
-
-    if (color === "GRAYSCALE") {
-      if (!grid) {
-        return gifFilterOptions.GRAYSCALE;
-      }
-
-      if (grid === "2x2") {
-        return gifFilterOptions.GRID_2_GRAYSCALE;
-      }
-
-      if (grid === "3x3") {
-        return gifFilterOptions.GRID_3_GRAYSCALE;
-      }
-
-      if (grid === "4x4") {
-        return gifFilterOptions.GRID_4_GRAYSCALE;
-      }
-    }
-
-    if (color === "REVERSAL") {
-      if (!grid) {
-        return gifFilterOptions.REVERSAL;
-      }
-
-      if (grid === "2x2") {
-        return gifFilterOptions.GRID_2_REVERSAL;
-      }
-
-      if (grid === "3x3") {
-        return gifFilterOptions.GRID_3_REVERSAL;
-      }
-
-      if (grid === "4x4") {
-        return gifFilterOptions.GRID_4_REVERSAL;
-      }
-    }
-  };
-
-  if (getGifOption(color, grid)) {
+  if (type) {
     return new Promise((resolve, reject) => {
       ffmpeg(originVideo)
-        .complexFilter(getGifOption(color, grid))
+        .complexFilter(type)
         .fps(fps ? fps : 15)
         .output(`./${filename}`)
         .on("end", (err) => {
