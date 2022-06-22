@@ -43,7 +43,7 @@ describe("POST `/api/videos`", () => {
       try {
         await User.create(mockUser);
       } catch (err) {
-        console.log(`err: ${err} cannot create mock activity`);
+        console.log(`err: ${err} cannot create mock video`);
       }
     });
 

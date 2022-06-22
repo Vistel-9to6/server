@@ -43,7 +43,7 @@ describe("PATCH `/api/videos`", () => {
       try {
         await User.create(mockUser);
       } catch (err) {
-        console.log(`err: ${err} cannot create mock activity`);
+        console.log(`err: ${err} cannot create mock video`);
       }
     });
 
@@ -83,7 +83,7 @@ describe("PATCH `/api/videos`", () => {
     it("originalVideoUrl 값이 없다면 동영상을 병합할 수 없어야 한다", (done) => {
       request(app)
         .patch("/api/videos")
-        .set("authorization", "Bearer 올바른 토큰")
+        .set("authorization", `Bearer ${mockToken}`)
         .set("Content-Type", "multipart/form-data")
         .field({ originalVideoUrl: "" })
         .attach("video", Buffer.from("videoData"), "newVideo.mp4")
@@ -96,7 +96,7 @@ describe("PATCH `/api/videos`", () => {
           expect(res.body).toBeTruthy();
           expect(res.body.result).toBe("ng");
           expect(res.body.errorMessage).toBe(
-            "title or maxCreators value is required. try again.",
+            "originVideoUrl value is required. try again.",
           );
 
           const newVideo = await Video.findOne({ title: "newVideo" });
