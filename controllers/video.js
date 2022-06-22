@@ -45,6 +45,13 @@ exports.createVideo = async (req, res, next) => {
   const { video, thumbnail } = req.files;
   const { id } = req.decoded;
 
+  if (!title || !maxCreators) {
+    return res.status(400).json({
+      result: "ng",
+      errorMessage: "title or maxCreators value is required. try again.",
+    });
+  }
+
   try {
     const user = await UserService.findUserByGoogleId({ userId: id });
 
