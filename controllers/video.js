@@ -79,6 +79,13 @@ exports.updateVideo = async (req, res, next) => {
   const { file } = req;
   const { id } = req.decoded;
 
+  if (!originVideoUrl) {
+    return res.status(400).json({
+      result: "ng",
+      errorMessage: "originVideoUrl value is required. try again.",
+    });
+  }
+
   try {
     const concatedVideo = await concatVideos(originVideoUrl, file.location);
     if (concatedVideo.result === "ng") {
@@ -103,7 +110,7 @@ exports.updateVideo = async (req, res, next) => {
       user._id,
     );
 
-    res.status(201).json({
+    res.status(200).json({
       result: "ok",
     });
 
