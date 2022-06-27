@@ -27,13 +27,7 @@ exports.createUser = async (req, res, next) => {
     });
   }
 
-  const payload = decoded.getPayload();
-  const user = {
-    userId: payload.sub,
-    profilePhoto: payload.picture,
-  };
-
-  const { userId, profilePhoto } = user;
+  const { sub: userId, picture: profilePhoto } = decoded.payload;
 
   try {
     let user = await UserService.findUserByGoogleId({ userId });
